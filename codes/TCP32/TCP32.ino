@@ -16,8 +16,12 @@ int port = 8888; // Port number
 WiFiServer server(port);
 
 // Server connect to WiFi Network
-const char *ssid = "DT4G";   // Enter your wifi SSID
-const char *password = "iuytrewq"; // Enter your wifi Password
+char * ssid_ap = "test_esp";
+char * password_ap = "12345678";
+IPAddress ip(192,168,11,4); // arbitrary IP address (doesn't conflict w/ local network)
+IPAddress gateway(192,168,11,1);
+IPAddress subnet(255,255,255,0);
+
 
 int count = 0;
 //=======================================================================
@@ -26,27 +30,30 @@ int count = 0;
 void setup()
 {
   Serial.begin(115200);
-  pinMode(SendKey, INPUT_PULLUP); // Btn to send data
-  Serial.println();
+  WiFi.mode(WIFI_AP);
+  WiFi.softAPConfig(ip,gateway,subnet);
+  WiFi.softAP(ssid_ap,password_ap);
 
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password); // Connect to wifi
+  IPAddress IP = WiFi.softAPIP();
+  Serial.print("AP IP address: ");
+  Serial.println(IP);
 
   // Wait for connection
-  Serial.println("Connecting to Wifi");
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(500);
-    Serial.print(".");
-    delay(500);
-  }
+  // Serial.println("Connecting to Wifi");
+  
+  // while (WiFi.status() != WL_CONNECTED)
+  // {
+  //   delay(500);
+  //   Serial.print(".");
+  //   delay(500);
+  // }
 
   Serial.println("");
   Serial.print("Connected to ");
-  Serial.println(ssid);
+  Serial.println(ssid_ap);
 
-  Serial.print("IP address: ");
-  Serial.println(WiFi.localIP());
+  // Serial.print("IP address: ");
+  // Serial.println(WiFi.localIP());
   server.begin();
   Serial.println(port);
 }
@@ -75,7 +82,7 @@ void loop()
         // read data from the connected client
         Serial.write(client.read());
       }
-      client.println(325352352352);
+      client.println(millis());
       // client.write('\0');
       // client.flush();
       // delay(100);
