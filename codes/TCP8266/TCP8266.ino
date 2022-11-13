@@ -75,7 +75,7 @@ void loop()
         // read data from the connected client
         Serial.write(client.read());
       }
-      client.print(i++);
+      client.println(millis());
       // client.write('\0');
       // client.flush();
       // delay(100);

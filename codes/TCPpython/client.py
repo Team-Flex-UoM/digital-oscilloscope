@@ -28,7 +28,7 @@ clientSocket.send(data.encode());
 
 # Receive data from server
 
-while True:
+for i in range(100):
 
     dataFromServer = clientSocket.recv(1024);
 
