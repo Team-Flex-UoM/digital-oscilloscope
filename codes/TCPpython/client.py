@@ -14,7 +14,9 @@ clientSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM);
 
 
 
-clientSocket.connect(("192.168.1.12",8888));
+# clientSocket.connect(("192.168.1.12",8888))
+
+clientSocket.connect(("192.168.11.4",8888))
 
  
 
