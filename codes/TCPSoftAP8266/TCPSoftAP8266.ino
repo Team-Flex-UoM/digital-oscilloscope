@@ -19,7 +19,7 @@ WiFiServer server(port);
 const char *ssid = "SLT FIBER ABEY";   // Enter your wifi SSID
 const char *password = "rc62669699ac"; // Enter your wifi Password
 
-char *ssid_ap = "test_esp";
+char *ssid_ap = "test_esp8266";
 char *password_ap = "12345678";
 IPAddress ip(192, 168, 11, 4); // arbitrary IP address (doesn't conflict w/ local network)
 IPAddress gateway(192, 168, 11, 1);
@@ -67,8 +67,12 @@ void loop()
         // read data from the connected client
         Serial.write(client.read());
       }
-      int a = analogRead(A0);
-      client.println(millis());
+      int samples[100];
+      unsigned long t1 = millis();
+      for (int i = 0; i < 100; i++)
+        samples[i] = analogRead(A0);
+      unsigned long t2 = millis();
+      client.print(t2 - t1);
       // client.write('\0');
       // client.flush();
       // delay(100);
