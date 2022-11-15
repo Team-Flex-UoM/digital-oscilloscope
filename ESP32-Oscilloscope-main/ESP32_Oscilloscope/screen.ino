@@ -2,55 +2,61 @@ void setup_screen()
 {
   // Initialise the TFT registers
   tft.init();
-  tft.setRotation(1);
+  // tft.setRotation(1);
 
   // Optionally set colour depth to 8 or 16 bits, default is 16 if not spedified
-  spr.setColorDepth(8);
+  // spr.setColorDepth(8);
 
-  // Create a sprite of defined size
+  // // Create a sprite of defined size
   spr.createSprite(HEIGHT, WIDTH);
   // Clear the TFT screen to blue
   tft.fillScreen(TFT_BLACK);
+//   tft.setCursor(0, 0, 2);
+//   // Set the font colour to be white with a black background, set text size multiplier to 1
+//   tft.setTextColor(TFT_WHITE,TFT_BLACK);  tft.setTextSize(1);
+//   // We can now plot text on screen using the "print" class
+//   tft.println("Hello World!");
+//   tft.println("foeihfioae!");
 }
 
 int data[280] = {0};
 
-// float to_scale(float reading) {
-//   float temp = WIDTH -
-//                (
-//                  (
-//                    (
-//                      (float)((reading - 20480.0) / 4095.0)
-//                      + (offset / 3.3)
-//                    )
-//                    * 3300 /
-//                    (v_div * 6)
-//                  )
-//                )
-//                * (WIDTH - 1)
-//                - 1;
-//   return temp;
-// }
-
-// float to_voltage(float reading) {
-//   return  (reading - 20480.0) / 4095.0 * 3.3;
-// }
-
-float to_scale(float reading)
-{
-
-  float temp = WIDTH - (((reading / 4095.0) + (offset / 3.3)) * 3300 / (v_div * 6)) * (WIDTH - 1) - 1;
+float to_scale(float reading) {
+  float temp = WIDTH -
+               (
+                 (
+                   (
+                     (float)((reading - 20480.0) / 4095.0)
+                     + (offset / 3.3)
+                   )
+                   * 3300 /
+                   (v_div * 6)
+                 )
+               )
+               * (WIDTH - 1)
+               - 1;
   return temp;
 }
 
-float to_voltage(float reading) { return reading / 4095.0 * 3.3; }
+float to_voltage(float reading) {
+  return  (reading - 20480.0) / 4095.0 * 3.3;
+}
 
-uint32_t from_voltage(float voltage) { return ((uint32_t)(voltage / 3.3 * 4095)); }
-
-// uint32_t from_voltage(float voltage)
+// float to_scale(float reading)
 // {
-//   return uint32_t(voltage / 3.3 * 4095 + 20480.0);
+
+//   float temp = WIDTH - (((reading / 4095.0) + (offset / 3.3)) * 3300 / (v_div * 6)) * (WIDTH - 1) - 1;
+//   return temp;
 // }
+
+// float to_voltage(float reading) { return reading / 4095.0 * 3.3; }
+
+// uint32_t from_voltage(float voltage) { return ((uint32_t)(voltage / 3.3 * 4095)); }
+
+uint32_t from_voltage(float voltage)
+{
+  return uint32_t(voltage / 3.3 * 4095 + 20480.0);
+}
 
 void update_screen(uint16_t *i2s_buff, float sample_rate)
 {
@@ -88,7 +94,8 @@ void update_screen(uint16_t *i2s_buff, float sample_rate)
     trigger_freq_digital(i2s_buff, sample_rate, mean, max_v, min_v, &freq, &period, &trigger0);
   }
 
-  draw_sprite(freq, period, mean, max_v, min_v, trigger0, sample_rate, digital_data, true);
+  //draw_sprite(freq, period, mean, max_v, min_v, trigger0, sample_rate, digital_data, true);
+  //tft.println(mean);
 }
 
 void draw_sprite(float freq,

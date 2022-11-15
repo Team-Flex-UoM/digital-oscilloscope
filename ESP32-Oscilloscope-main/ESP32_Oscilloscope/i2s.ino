@@ -40,8 +40,8 @@ void ADC_Sampling(uint16_t *i2s_buff)
 
     i2s_read(I2S_NUM_0, (void *)&i2s_buff[i * NUM_SAMPLES], NUM_SAMPLES * sizeof(uint16_t), &bytes_read, portMAX_DELAY);
 
-    for (size_t ix = 0; ix < bytes_read / 2; ix++)
-      i2s_buff[(i * NUM_SAMPLES) + ix] &= 0x0FFF; // 16bit to 12bit conversion
+    // for (size_t ix = 0; ix < bytes_read / 2; ix++)
+    //   i2s_buff[(i * NUM_SAMPLES) + ix] &= 0x0FFF; // 16bit to 12bit conversion
   }
 }
 
