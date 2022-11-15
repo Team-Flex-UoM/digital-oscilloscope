@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include <WiFi.h>
 #include <driver/i2s.h>
 #include <driver/adc.h>
 #include <soc/syscon_reg.h>
@@ -91,6 +91,15 @@ bool new_data = false;
 bool menu_action = false;
 uint8_t digital_wave_option = 0; // 0-auto | 1-analog | 2-digital data (SERIAL/SPI/I2C/etc)
 int btnok, btnpl, btnmn, btnbk;
+
+int port = 8888; // Port number
+WiFiServer server(port);
+char *ssid_ap = "test_esp";
+char *password_ap = "12345678";
+IPAddress ip(192, 168, 11, 4); // arbitrary IP address (doesn't conflict w/ local network)
+IPAddress gateway(192, 168, 11, 1);
+IPAddress subnet(255, 255, 255, 0);
+
 void IRAM_ATTR btok()
 {
   btnok = 1;
@@ -134,7 +143,7 @@ void setup()
       "menu_handle",
       10000,      /* Stack size in words */
       NULL,       /* Task input parameter */
-      0,          /* Priority of the task */
+      3,          /* Priority of the task */
       &task_menu, /* Task handle. */
       0);         /* Core where the task should run */
 
@@ -143,9 +152,19 @@ void setup()
       "adc_handle",
       10000,     /* Stack size in words */
       NULL,      /* Task input parameter */
-      3,         /* Priority of the task */
+      0,         /* Priority of the task */
       &task_adc, /* Task handle. */
       1);        /* Core where the task should run */
+
+  WiFi.mode(WIFI_AP);
+  WiFi.softAPConfig(ip, gateway, subnet);
+  WiFi.softAP(ssid_ap, password_ap);
+
+  IPAddress IP = WiFi.softAPIP();
+  Serial.print("AP IP address: ");
+  Serial.println(IP);
+  server.begin();
+  Serial.println(port);
 }
 
 void core0_task(void *pvParameters)
@@ -155,23 +174,54 @@ void core0_task(void *pvParameters)
 
   for (;;)
   {
-    menu_handler();
+    // menu_handler();
 
-    if (new_data || menu_action)
+    // if (new_data || menu_action)
+    // {
+    //   new_data = false;
+    //   menu_action = false;
+
+    //   updating_screen = true;
+    //   // update_screen(i2s_buff, RATE);
+    //   for (int i = 0; i < BUFF_SIZE; i++)
+    //     Serial.println(i2s_buff[i]);
+    //   updating_screen = false;
+    //   vTaskDelay(pdMS_TO_TICKS(10));
+    //   Serial.println("CORE0");
+    // }
+
+    // vTaskDelay(pdMS_TO_TICKS(10));
+
+    WiFiClient client = server.available();
+
+    if (client)
     {
-      new_data = false;
-      menu_action = false;
+      if (client.connected())
+      {
+        Serial.println("Client Connected");
+        // Serial.println(client.isKeepAliveEnabled());
+      }
 
-      updating_screen = true;
-      // update_screen(i2s_buff, RATE);
-      for (int i = 0; i < BUFF_SIZE; i++)
-        Serial.println(i2s_buff[i]);
-      updating_screen = false;
-      vTaskDelay(pdMS_TO_TICKS(10));
-      Serial.println("CORE0");
+      int i = 0;
+
+      while (client.connected())
+      {
+        while (client.available() > 0)
+        {
+          // read data from the connected client
+          Serial.write(client.read());
+        }
+
+        updating_screen = true;
+        // update_screen(i2s_buff, RATE);
+        for (int i = 0; i < BUFF_SIZE; i++)
+          client.print(i2s_buff[i]);
+        updating_screen = false;
+      }
+
+      client.stop();
+      Serial.println("Client disconnected");
     }
-
-    vTaskDelay(pdMS_TO_TICKS(10));
   }
 }
 

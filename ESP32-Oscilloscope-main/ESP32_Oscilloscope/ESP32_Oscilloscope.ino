@@ -13,7 +13,7 @@
 
 // Width and height of sprite
 #define WIDTH  240
-#define HEIGHT 280
+#define HEIGHT 320
 
 #define ADC_CHANNEL   ADC1_CHANNEL_5  // GPIO33
 #define NUM_SAMPLES   1000            // number of samples
