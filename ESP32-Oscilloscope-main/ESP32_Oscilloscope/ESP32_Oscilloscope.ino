@@ -115,14 +115,14 @@ void setup() {
 
   setup_screen();
 
-  pinMode(BUTTON_Ok , INPUT);
-  pinMode(BUTTON_Plus , INPUT);
-  pinMode(BUTTON_Minus , INPUT);
-  pinMode(BUTTON_Back , INPUT);
-  attachInterrupt(BUTTON_Ok, btok, RISING);
-  attachInterrupt(BUTTON_Plus, btplus, RISING);
-  attachInterrupt(BUTTON_Minus, btminus, RISING);
-  attachInterrupt(BUTTON_Back, btback, RISING);
+  // pinMode(BUTTON_Ok , INPUT);
+  // pinMode(BUTTON_Plus , INPUT);
+  // pinMode(BUTTON_Minus , INPUT);
+  // pinMode(BUTTON_Back , INPUT);
+  // attachInterrupt(BUTTON_Ok, btok, RISING);
+  // attachInterrupt(BUTTON_Plus, btplus, RISING);
+  // attachInterrupt(BUTTON_Minus, btminus, RISING);
+  // attachInterrupt(BUTTON_Back, btback, RISING);
 
   characterize_adc();
 #ifdef DEBUG_BUF
