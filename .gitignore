@@ -1,3 +1,11 @@
 # *.pdf
 PCB/History/
 PCB/Project Logs for PCB/
+PCB/Project Outputs for PCB/
+PCB2/History/
+PCB2/Project Logs for PCB2/
+PCB2/Project Outputs for PCB2/
+*.cam
+*.zip
+PCB/__Previews/
+PCB2/__Previews/
