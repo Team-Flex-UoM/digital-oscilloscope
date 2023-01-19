@@ -13,7 +13,7 @@ void setup_screen()
   tft.fillScreen(TFT_BLACK);
 }
 
-int data[280] = {0};
+int data[320] = {0};
 
 // float to_scale(float reading) {
 //   float temp = WIDTH -
@@ -35,6 +35,13 @@ int data[280] = {0};
 // float to_voltage(float reading) {
 //   return  (reading - 20480.0) / 4095.0 * 3.3;
 // }
+
+String get_v_div(float val){
+  if(val<1000)
+    return String(int(val)) + "mV/div";
+  else
+    return String(val/1000.0) + "V/div";
+}
 
 float to_scale(float reading)
 {
@@ -107,17 +114,17 @@ void draw_sprite(float freq,
 
   String frequency = "";
   if (freq < 1000)
-    frequency = String(freq) + "hz";
+    frequency = String(freq*2) + "hz";
   else if (freq < 100000)
-    frequency = String(freq / 1000) + "khz";
+    frequency = String(freq*2 / 1000) + "khz";
   else
     frequency = "----";
 
   String s_mean = "";
   if (mean > 1.0)
-    s_mean = "Avg: " + String(mean) + "V";
+    s_mean = "Avg: " + String(mean*scale) + "V";
   else
-    s_mean = "Avg: " + String(mean * 1000.0) + "mV";
+    s_mean = "Avg: " + String(mean * 1000.0 * scale) + "mV";
 
   String str_filter = "";
   if (current_filter == 0)
@@ -172,15 +179,15 @@ void draw_sprite(float freq,
   int shift = 150;
   if (menu)
   {
-    spr.drawLine(0, 120, 280, 120, TFT_WHITE); // center line
+    spr.drawLine(0, 120, 320, 120, TFT_WHITE); // center line
     spr.fillRect(shift, 0, 102, 135, TFT_BLACK);
     spr.drawRect(shift, 0, 102, 135, TFT_WHITE);
     spr.fillRect(shift + 1, 3 + 10 * (opt - 1), 100, 11, TFT_RED);
 
     spr.drawString("AUTOSCALE", shift + 5, 5);
-    spr.drawString(String(int(v_div)) + "mV/div", shift + 5, 15);
+    spr.drawString(get_v_div(v_div * scale), shift + 5, 15);
     spr.drawString(String(int(s_div)) + "uS/div", shift + 5, 25);
-    spr.drawString("Offset: " + String(offset) + "V", shift + 5, 35);
+    spr.drawString("Offset: " + String(offset * scale) + "V", shift + 5, 35);
     spr.drawString("T-Off: " + String((uint32_t)toffset) + "uS", shift + 5, 45);
     spr.drawString("Filter: " + str_filter, shift + 5, 55);
     spr.drawString(str_stop, shift + 5, 65);
@@ -189,17 +196,17 @@ void draw_sprite(float freq,
 
     spr.drawLine(shift, 103, shift + 100, 103, TFT_WHITE);
 
-    spr.drawString("Vmax: " + String(max_v) + "V", shift + 5, 105);
-    spr.drawString("Vmin: " + String(min_v) + "V", shift + 5, 115);
+    spr.drawString("Vmax: " + String(max_v * scale) + "V", shift + 5, 105);
+    spr.drawString("Vmin: " + String(min_v * scale) + "V", shift + 5, 115);
     spr.drawString(s_mean, shift + 5, 125);
 
     shift -= 70;
 
     // spr.fillRect(shift, 0, 70, 30, TFT_BLACK);
     spr.drawRect(shift, 0, 70, 30, TFT_WHITE);
-    spr.drawString("P-P: " + String(max_v - min_v) + "V", shift + 5, 5);
+    spr.drawString("P-P: " + String((max_v - min_v) * scale) + "V", shift + 5, 5);
     spr.drawString(frequency, shift + 5, 15);
-    String offset_line = String((2.0 * v_div) / 1000.0 - offset) + "V";
+    String offset_line = String(((2.0 * v_div) / 1000.0 - offset) * scale) + "V";
     spr.drawString(offset_line, shift + 40, 59);
 
     if (set_value)
@@ -216,14 +223,14 @@ void draw_sprite(float freq,
   }
   else if (info)
   {
-    spr.drawLine(0, 120, 280, 120, TFT_WHITE); // center line
+    spr.drawLine(0, 120, 320, 120, TFT_WHITE); // center line
     // spr.drawRect(shift + 10, 0, 280 - shift - 20, 30, TFT_WHITE);
-    spr.drawString("P-P: " + String(max_v - min_v) + "V", shift + 15, 5);
+    spr.drawString("P-P: " + String((max_v - min_v) * scale) + "V", shift + 15, 5);
     spr.drawString(frequency, shift + 15, 15);
-    spr.drawString(String(int(v_div)) + "mV/div", shift - 100, 5);
+    spr.drawString(get_v_div(v_div * scale), shift - 100, 5);
     spr.drawString(String(int(s_div)) + "uS/div", shift - 100, 15);
-    String offset_line = String((2.0 * v_div) / 1000.0 - offset) + "V";
-    spr.drawString(offset_line, shift + 100, 112);
+    String offset_line = String(((2.0 * v_div) / 1000.0 - offset) * scale) + "V";
+    spr.drawString(offset_line, shift + 130, 112);
   }
 
   // push the drawed sprite to the screen
@@ -235,7 +242,7 @@ void draw_sprite(float freq,
 void draw_grid()
 {
 
-  for (int i = 0; i < 28; i++)
+  for (int i = 0; i < 32; i++)
   {
     spr.drawPixel(i * 10, 40, TFT_WHITE);
     spr.drawPixel(i * 10, 80, TFT_WHITE);
@@ -245,7 +252,7 @@ void draw_grid()
   }
   for (int i = 0; i < 240; i += 10)
   {
-    for (int j = 0; j < 280; j += 40)
+    for (int j = 0; j < 320; j += 40)
     {
       spr.drawPixel(j, i, TFT_WHITE);
     }
@@ -269,7 +276,7 @@ void draw_channel1(uint32_t trigger0, uint32_t trigger1, uint16_t *i2s_buff, flo
   trigger0 += index_offset;
   uint32_t old_index = trigger0;
   float n_data = 0, o_data = to_scale(i2s_buff[trigger0]);
-  for (uint32_t i = 1; i < 280; i++)
+  for (uint32_t i = 1; i < 320; i++)
   {
     uint32_t index = trigger0 + (uint32_t)((i + 1) * data_per_pixel);
     if (index < BUFF_SIZE)

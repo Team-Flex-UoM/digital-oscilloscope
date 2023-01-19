@@ -18,12 +18,13 @@
 #define ADC_CHANNEL ADC1_CHANNEL_5  // GPIO33
 #define NUM_SAMPLES 1000            // number of samples
 #define I2S_NUM (0)
-#define BUFF_SIZE 50000
+#define BUFF_SIZE 10000
 #define B_MULT BUFF_SIZE / NUM_SAMPLES
 #define BUTTON_Ok 35
 #define BUTTON_Plus 25
 #define BUTTON_Minus 32
 #define BUTTON_Back 34
+#define BUTTON_SS 12
 
 TFT_eSPI tft = TFT_eSPI();  // Declare object "tft"
 
@@ -38,8 +39,9 @@ TaskHandle_t task_adc;
 
 float v_div = 825;
 float s_div = 10;
-float offset = 0;
+float offset = 1.65;
 float toffset = 0;
+float scale = 1.0;
 uint8_t current_filter = 1;
 
 //options handler
@@ -104,6 +106,14 @@ void IRAM_ATTR btminus() {
 void IRAM_ATTR btback() {
   btnbk = 1;
 }
+void IRAM_ATTR btss()
+{
+  if(digitalRead(BUTTON_SS))
+    scale = 10.0;
+  else
+    scale = 1.0;
+}
+
 void setup() {
   Serial.begin(115200);
 
@@ -115,15 +125,17 @@ void setup() {
   pinMode(BUTTON_Plus , INPUT);
   pinMode(BUTTON_Minus , INPUT);
   pinMode(BUTTON_Back , INPUT);
+  pinMode(BUTTON_SS, INPUT);
   attachInterrupt(BUTTON_Ok, btok, RISING);
   attachInterrupt(BUTTON_Plus, btplus, RISING);
   attachInterrupt(BUTTON_Minus, btminus, RISING);
   attachInterrupt(BUTTON_Back, btback, RISING);
+  attachInterrupt(BUTTON_SS, btss, CHANGE);
 
-// while(1)  {
+  // while(1)  {
 
-//   // Serial.print(digitalRead(BUTTON_Ok));
-// }
+  //   // Serial.print(digitalRead(BUTTON_Ok));
+  // }
 
 
   characterize_adc();
