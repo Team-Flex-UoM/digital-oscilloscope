@@ -125,7 +125,7 @@ void setup() {
   pinMode(BUTTON_Plus , INPUT);
   pinMode(BUTTON_Minus , INPUT);
   pinMode(BUTTON_Back , INPUT);
-  pinMode(BUTTON_SS, INPUT);
+  pinMode(BUTTON_SS, INPUT_PULLUP);
   attachInterrupt(BUTTON_Ok, btok, RISING);
   attachInterrupt(BUTTON_Plus, btplus, RISING);
   attachInterrupt(BUTTON_Minus, btminus, RISING);
