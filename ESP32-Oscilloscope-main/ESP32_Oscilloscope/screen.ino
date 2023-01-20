@@ -2,7 +2,7 @@ void setup_screen()
 {
   // Initialise the TFT registers
   tft.init();
-  tft.setRotation(1);
+  tft.setRotation(3);
 
   // Optionally set colour depth to 8 or 16 bits, default is 16 if not spedified
   spr.setColorDepth(8);
@@ -36,11 +36,12 @@ int data[320] = {0};
 //   return  (reading - 20480.0) / 4095.0 * 3.3;
 // }
 
-String get_v_div(float val){
-  if(val<1000)
+String get_v_div(float val)
+{
+  if (val < 1000)
     return String(int(val)) + "mV/div";
   else
-    return String(val/1000.0) + "V/div";
+    return String(val / 1000.0) + "V/div";
 }
 
 float to_scale(float reading)
@@ -114,15 +115,15 @@ void draw_sprite(float freq,
 
   String frequency = "";
   if (freq < 1000)
-    frequency = String(freq*2) + "hz";
+    frequency = String(freq * 2) + "hz";
   else if (freq < 100000)
-    frequency = String(freq*2 / 1000) + "khz";
+    frequency = String(freq * 2 / 1000) + "khz";
   else
     frequency = "----";
 
   String s_mean = "";
   if (mean > 1.0)
-    s_mean = "Avg: " + String(mean*scale) + "V";
+    s_mean = "Avg: " + String(mean * scale) + "V";
   else
     s_mean = "Avg: " + String(mean * 1000.0 * scale) + "mV";
 
