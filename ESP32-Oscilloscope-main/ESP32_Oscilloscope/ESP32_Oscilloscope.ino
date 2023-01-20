@@ -7,18 +7,18 @@
 #include "esp_adc_cal.h"
 #include "filters.h"
 
-//#define DEBUG_SERIAL
-//#define DEBUG_BUFF
+// #define DEBUG_SERIAL
+// #define DEBUG_BUFF
 #define DELAY 1000
 
 // Width and height of sprite
 #define WIDTH 240
 #define HEIGHT 320
 
-#define ADC_CHANNEL ADC1_CHANNEL_5  // GPIO33
-#define NUM_SAMPLES 1000            // number of samples
+#define ADC_CHANNEL ADC1_CHANNEL_5 // GPIO33
+#define NUM_SAMPLES 1000           // number of samples
 #define I2S_NUM (0)
-#define BUFF_SIZE 10000
+#define BUFF_SIZE 50000
 #define B_MULT BUFF_SIZE / NUM_SAMPLES
 #define BUTTON_Ok 35
 #define BUTTON_Plus 25
@@ -26,11 +26,9 @@
 #define BUTTON_Back 34
 #define BUTTON_SS 12
 
-TFT_eSPI tft = TFT_eSPI();  // Declare object "tft"
+TFT_eSPI tft = TFT_eSPI(); // Declare object "tft"
 
-TFT_eSprite spr = TFT_eSprite(&tft);  // Declare Sprite object "spr" with pointer to "tft" object
-
-
+TFT_eSprite spr = TFT_eSprite(&tft); // Declare Sprite object "spr" with pointer to "tft" object
 
 esp_adc_cal_characteristics_t adc_chars;
 
@@ -44,8 +42,9 @@ float toffset = 0;
 float scale = 1.0;
 uint8_t current_filter = 1;
 
-//options handler
-enum Option {
+// options handler
+enum Option
+{
   None,
   Autoscale,
   Vdiv,
@@ -74,7 +73,7 @@ bool menu = false;
 bool info = true;
 bool set_value = false;
 
-float RATE = 1000;  //in ksps --> 1000 = 1Msps
+float RATE = 1000; // in ksps --> 1000 = 1Msps
 
 bool auto_scale = false;
 
@@ -92,39 +91,44 @@ bool data_trigger = false;
 bool updating_screen = false;
 bool new_data = false;
 bool menu_action = false;
-uint8_t digital_wave_option = 0;  //0-auto | 1-analog | 2-digital data (SERIAL/SPI/I2C/etc)
+uint8_t digital_wave_option = 0; // 0-auto | 1-analog | 2-digital data (SERIAL/SPI/I2C/etc)
 int btnok, btnpl, btnmn, btnbk;
-void IRAM_ATTR btok() {
+void IRAM_ATTR btok()
+{
   btnok = 1;
 }
-void IRAM_ATTR btplus() {
+void IRAM_ATTR btplus()
+{
   btnpl = 1;
 }
-void IRAM_ATTR btminus() {
+void IRAM_ATTR btminus()
+{
   btnmn = 1;
 }
-void IRAM_ATTR btback() {
+void IRAM_ATTR btback()
+{
   btnbk = 1;
 }
 void IRAM_ATTR btss()
 {
-  if(digitalRead(BUTTON_SS))
+  if (digitalRead(BUTTON_SS))
     scale = 10.0;
   else
     scale = 1.0;
 }
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
 
   configure_i2s(1000000);
 
   setup_screen();
 
-  pinMode(BUTTON_Ok , INPUT);
-  pinMode(BUTTON_Plus , INPUT);
-  pinMode(BUTTON_Minus , INPUT);
-  pinMode(BUTTON_Back , INPUT);
+  pinMode(BUTTON_Ok, INPUT);
+  pinMode(BUTTON_Plus, INPUT);
+  pinMode(BUTTON_Minus, INPUT);
+  pinMode(BUTTON_Back, INPUT);
   pinMode(BUTTON_SS, INPUT_PULLUP);
   attachInterrupt(BUTTON_Ok, btok, RISING);
   attachInterrupt(BUTTON_Plus, btplus, RISING);
@@ -137,40 +141,41 @@ void setup() {
   //   // Serial.print(digitalRead(BUTTON_Ok));
   // }
 
-
   characterize_adc();
 #ifdef DEBUG_BUF
   debug_buffer();
 #endif
 
   xTaskCreatePinnedToCore(
-    core0_task,
-    "menu_handle",
-    10000,      /* Stack size in words */
-    NULL,       /* Task input parameter */
-    0,          /* Priority of the task */
-    &task_menu, /* Task handle. */
-    0);         /* Core where the task should run */
+      core0_task,
+      "menu_handle",
+      10000,      /* Stack size in words */
+      NULL,       /* Task input parameter */
+      0,          /* Priority of the task */
+      &task_menu, /* Task handle. */
+      0);         /* Core where the task should run */
 
   xTaskCreatePinnedToCore(
-    core1_task,
-    "adc_handle",
-    10000,     /* Stack size in words */
-    NULL,      /* Task input parameter */
-    3,         /* Priority of the task */
-    &task_adc, /* Task handle. */
-    1);        /* Core where the task should run */
+      core1_task,
+      "adc_handle",
+      10000,     /* Stack size in words */
+      NULL,      /* Task input parameter */
+      3,         /* Priority of the task */
+      &task_adc, /* Task handle. */
+      1);        /* Core where the task should run */
 }
 
-
-void core0_task(void* pvParameters) {
+void core0_task(void *pvParameters)
+{
 
   (void)pvParameters;
 
-  for (;;) {
+  for (;;)
+  {
     menu_handler();
 
-    if (new_data || menu_action) {
+    if (new_data || menu_action)
+    {
       new_data = false;
       menu_action = false;
 
@@ -178,94 +183,122 @@ void core0_task(void* pvParameters) {
       update_screen(i2s_buff, RATE);
       updating_screen = false;
       vTaskDelay(pdMS_TO_TICKS(10));
-      Serial.println("CORE0");
+      // Serial.println("CORE0");
     }
 
     vTaskDelay(pdMS_TO_TICKS(10));
   }
 }
 
-void core1_task(void* pvParameters) {
+void core1_task(void *pvParameters)
+{
 
   (void)pvParameters;
 
-  for (;;) {
-    if (!single_trigger) {
-      while (updating_screen) {
+  for (;;)
+  {
+    if (!single_trigger)
+    {
+      while (updating_screen)
+      {
         vTaskDelay(pdMS_TO_TICKS(1));
       }
-      if (!stop) {
-        if (stop_change) {
+      if (!stop)
+      {
+        if (stop_change)
+        {
           i2s_adc_enable(I2S_NUM_0);
           stop_change = false;
         }
         ADC_Sampling(i2s_buff);
         new_data = true;
-      } else {
-        if (!stop_change) {
+      }
+      else
+      {
+        if (!stop_change)
+        {
           i2s_adc_disable(I2S_NUM_0);
           i2s_zero_dma_buffer(I2S_NUM_0);
           stop_change = true;
         }
       }
-      Serial.println("CORE1");
+      // Serial.println("CORE1");
       vTaskDelay(pdMS_TO_TICKS(300));
-    } else {
+    }
+    else
+    {
       float old_mean = 0;
-      while (single_trigger) {
+      while (single_trigger)
+      {
         stop = true;
         ADC_Sampling(i2s_buff);
         float mean = 0;
         float max_v, min_v;
         peak_mean(i2s_buff, BUFF_SIZE, &max_v, &min_v, &mean);
 
-        //signal captured (pp > 0.4V || changing mean > 0.2V) -> DATA ANALYSIS
-        if ((old_mean != 0 && fabs(mean - old_mean) > 0.2) || to_voltage(max_v) - to_voltage(min_v) > 0.05) {
+        // signal captured (pp > 0.4V || changing mean > 0.2V) -> DATA ANALYSIS
+        if ((old_mean != 0 && fabs(mean - old_mean) > 0.2) || to_voltage(max_v) - to_voltage(min_v) > 0.05)
+        {
           float freq = 0;
           float period = 0;
           uint32_t trigger0 = 0;
           uint32_t trigger1 = 0;
 
-          //if analog mode OR auto mode and wave recognized as analog
+          // if analog mode OR auto mode and wave recognized as analog
           bool digital_data = !false;
-          if (digital_wave_option == 1) {
+          if (digital_wave_option == 1)
+          {
             trigger_freq_analog(i2s_buff, RATE, mean, max_v, min_v, &freq, &period, &trigger0, &trigger1);
-          } else if (digital_wave_option == 0) {
+          }
+          else if (digital_wave_option == 0)
+          {
             digital_data = digital_analog(i2s_buff, max_v, min_v);
-            if (!digital_data) {
+            if (!digital_data)
+            {
               trigger_freq_analog(i2s_buff, RATE, mean, max_v, min_v, &freq, &period, &trigger0, &trigger1);
-            } else {
+            }
+            else
+            {
               trigger_freq_digital(i2s_buff, RATE, mean, max_v, min_v, &freq, &period, &trigger0);
             }
-          } else {
+          }
+          else
+          {
             trigger_freq_digital(i2s_buff, RATE, mean, max_v, min_v, &freq, &period, &trigger0);
           }
 
           single_trigger = false;
           new_data = true;
-          Serial.println("Single GOT");
-          //return to normal execution in stop mode
+          // Serial.println("Single GOT");
+          // return to normal execution in stop mode
         }
 
-        vTaskDelay(pdMS_TO_TICKS(1));  //time for the other task to start (low priorit)
+        vTaskDelay(pdMS_TO_TICKS(1)); // time for the other task to start (low priorit)
       }
       vTaskDelay(pdMS_TO_TICKS(300));
     }
   }
 }
 
-void loop() {
-  Serial.print(digitalRead(BUTTON_Ok));
-  delay(100);
+void loop()
+{
+  // Serial.print(digitalRead(BUTTON_Ok));
+  // delay(100);
 }
 
-void serialEvent() {
-  while (Serial.available()) {
-    // get the new byte:
-    char i = (char)Serial.read();
-    if (i == 'd') btnok = 1;
-    else if (i = 'w') btnpl = 1;
-    else if (i == 'x') btnmn = 1;
-    else if (i == 'a') btnbk = 1;
-  }
-}
+// void serialEvent()
+// {
+//   while (Serial.available())
+//   {
+//     // get the new byte:
+//     char i = (char)Serial.read();
+//     if (i == 'd')
+//       btnok = 1;
+//     else if (i = 'w')
+//       btnpl = 1;
+//     else if (i == 'x')
+//       btnmn = 1;
+//     else if (i == 'a')
+//       btnbk = 1;
+//   }
+// }
