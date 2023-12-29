@@ -1,3 +1,5 @@
+
+#define LINE_COLOR 0xFFE0
 void setup_screen()
 {
   // Initialise the TFT registers
@@ -123,9 +125,9 @@ void draw_sprite(float freq,
 
   String s_mean = "";
   if (mean > 1.0)
-    s_mean = "Avg: " + String(mean * scale) + "V";
+    s_mean = "Avg: " + String((mean + mvv) * scale) + "V";
   else
-    s_mean = "Avg: " + String(mean * 1000.0 * scale) + "mV";
+    s_mean = "Avg: " + String((mean + mvv) * 1000.0 * scale) + "mV";
 
   String str_filter = "";
   if (current_filter == 0)
@@ -188,17 +190,17 @@ void draw_sprite(float freq,
     spr.drawString("AUTOSCALE", shift + 5, 5);
     spr.drawString(get_v_div(v_div * scale), shift + 5, 15);
     spr.drawString(String(int(s_div)) + "uS/div", shift + 5, 25);
-    spr.drawString("Offset: " + String(offset * scale) + "V", shift + 5, 35);
+    spr.drawString("Offset: " + String((offset + mv) * scale) + "V", shift + 5, 35);
     spr.drawString("T-Off: " + String((uint32_t)toffset) + "uS", shift + 5, 45);
     spr.drawString("Filter: " + str_filter, shift + 5, 55);
     spr.drawString(str_stop, shift + 5, 65);
     spr.drawString(wave_option, shift + 5, 75);
-    spr.drawString("Single " + String(single_trigger ? "ON" : "OFF"), shift + 5, 85);
+    spr.drawString("Signal " + String(single_trigger ? "ON" : "OFF"), shift + 5, 85);
 
     spr.drawLine(shift, 103, shift + 100, 103, TFT_WHITE);
 
-    spr.drawString("Vmax: " + String(max_v * scale) + "V", shift + 5, 105);
-    spr.drawString("Vmin: " + String(min_v * scale) + "V", shift + 5, 115);
+    spr.drawString("Vmax: " + String((max_v + mvv) * scale) + "V", shift + 5, 105);
+    spr.drawString("Vmin: " + String((min_v + mvv) * scale) + "V", shift + 5, 115);
     spr.drawString(s_mean, shift + 5, 125);
 
     shift -= 70;
@@ -207,8 +209,8 @@ void draw_sprite(float freq,
     spr.drawRect(shift, 0, 70, 30, TFT_WHITE);
     spr.drawString("P-P: " + String((max_v - min_v) * scale) + "V", shift + 5, 5);
     spr.drawString(frequency, shift + 5, 15);
-    String offset_line = String(((2.0 * v_div) / 1000.0 - offset) * scale) + "V";
-    spr.drawString(offset_line, shift + 40, 59);
+    String offset_line = String((((2.0 * v_div) / 1000.0 - offset) + mv) * scale) + "V";
+    // spr.drawString(offset_line, shift + 40, 59);
 
     if (set_value)
     {
@@ -230,7 +232,7 @@ void draw_sprite(float freq,
     spr.drawString(frequency, shift + 15, 15);
     spr.drawString(get_v_div(v_div * scale), shift - 100, 5);
     spr.drawString(String(int(s_div)) + "uS/div", shift - 100, 15);
-    String offset_line = String(((2.0 * v_div) / 1000.0 - offset) * scale) + "V";
+    String offset_line = String((((2.0 * v_div) / 1000.0 - offset) + mv) * scale) + "V";
     spr.drawString(offset_line, shift + 130, 112);
   }
 
@@ -294,7 +296,7 @@ void draw_channel1(uint32_t trigger0, uint32_t trigger1, uint16_t *i2s_buff, flo
           else if (i2s_buff[j] < min_val)
             min_val = i2s_buff[j];
         }
-        spr.drawLine(i, to_scale(min_val), i, to_scale(max_val), TFT_BLUE);
+        spr.drawLine(i, to_scale(min_val), i, to_scale(max_val), LINE_COLOR);
       }
       else
       {
@@ -305,7 +307,7 @@ void draw_channel1(uint32_t trigger0, uint32_t trigger1, uint16_t *i2s_buff, flo
         else
           n_data = to_scale(i2s_buff[index]);
 
-        spr.drawLine(i - 1, o_data, i, n_data, TFT_BLUE);
+        spr.drawLine(i - 1, o_data, i, n_data, LINE_COLOR);
         o_data = n_data;
       }
     }

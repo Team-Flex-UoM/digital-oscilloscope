@@ -1,0 +1,14 @@
+Change Component Designator: Old Designator=EXT New Designator=EXT1
+Change Component Designator: Old Designator=P5 New Designator=P1
+Change Component Designator: Old Designator=POWER New Designator=POWER1
+Change Component Designator: Old Designator=PROBE New Designator=PROBE1
+Change Component Designator: Old Designator=R7 New Designator=R8
+Change Component Designator: Old Designator=R8 New Designator=R9
+Change Component Designator: Old Designator=R9 New Designator=R10
+Change Component Designator: Old Designator=R10 New Designator=R11
+Change Component Designator: Old Designator=R11 New Designator=R12
+Change Component Designator: Old Designator=R? New Designator=R7
+Change Component Designator: Old Designator=SW? New Designator=SW1
+Change Component Designator: Old Designator=SWITCH New Designator=SWITCH1
+Change Component Designator: Old Designator=TFT New Designator=TFT1
+Change Component Designator: Old Designator=UART New Designator=UART1

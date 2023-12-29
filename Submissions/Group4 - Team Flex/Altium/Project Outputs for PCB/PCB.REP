@@ -1,0 +1,277 @@
+*************************************************************
+FileName = PCB.GBR
+AutoAperture = True
+*************************************************************
+Generating : Bottom Component Center
+      File : PCB.GM24
+
+    Adding Layer      : Bottom Component Center
+
+    Adding Layer      : Board Outline
+
+
+Used DCodes :
+    D14
+*************************************************************
+
+*************************************************************
+Generating : Bottom 3D Body
+      File : PCB.GM23
+
+    Adding Layer      : Bottom 3D Body
+
+    Adding Layer      : Board Outline
+
+
+Used DCodes :
+    D14
+*************************************************************
+
+*************************************************************
+Generating : Bottom Courtyard
+      File : PCB.GM21
+
+    Adding Layer      : Bottom Courtyard
+
+    Adding Layer      : Board Outline
+
+
+Used DCodes :
+    D14
+*************************************************************
+
+*************************************************************
+Generating : Bottom Assembly
+      File : PCB.GM20
+
+    Adding Layer      : Bottom Assembly
+
+    Adding Layer      : Board Outline
+
+
+Used DCodes :
+    D14
+*************************************************************
+
+*************************************************************
+Generating : Top Component Center
+      File : PCB.GM16
+
+    Adding Layer      : Top Component Center
+
+    Adding Layer      : Board Outline
+
+
+Used DCodes :
+    D14
+    D33
+*************************************************************
+
+*************************************************************
+Generating : Top Courtyard
+      File : PCB.GM15
+
+    Adding Layer      : Top Courtyard
+
+    Adding Layer      : Board Outline
+
+
+Used DCodes :
+    D11
+    D14
+    D33
+    D34
+*************************************************************
+
+*************************************************************
+Generating : Top 3D Body
+      File : PCB.GM13
+
+    Adding Layer      : Top 3D Body
+
+    Adding Layer      : Board Outline
+
+
+Used DCodes :
+    D11
+    D14
+    D33
+*************************************************************
+
+*************************************************************
+Generating : Top Assembly
+      File : PCB.GM5
+
+    Adding Layer      : Top Assembly
+
+    Adding Layer      : Board Outline
+
+
+Used DCodes :
+    D11
+    D14
+*************************************************************
+
+*************************************************************
+Generating : Mechanical 1
+      File : PCB.GM1
+
+    Adding Layer      : Mechanical 1
+
+    Adding Layer      : Board Outline
+
+
+Used DCodes :
+    D14
+*************************************************************
+
+*************************************************************
+Generating : Keep-Out Layer
+      File : PCB.GKO
+
+    Adding Layer      : Keep-Out Layer
+
+    Adding Layer      : Board Outline
+
+
+Used DCodes :
+    D14
+    D35
+*************************************************************
+
+*************************************************************
+Generating : Bottom Overlay
+      File : PCB.GBO
+
+    Adding Layer      : Bottom Overlay
+
+    Adding Layer      : Board Outline
+
+
+Used DCodes :
+    D14
+*************************************************************
+
+*************************************************************
+Generating : Bottom Solder
+      File : PCB.GBS
+
+    Adding Layer      : Bottom Solder
+
+    Adding Layer      : Board Outline
+
+    Adding Layer      : Bottom Layer
+
+    Adding Layer      : Multi-Layer
+
+
+Used DCodes :
+    D14
+    D18
+    D19
+    D20
+    D21
+    D22
+    D23
+    D24
+    D25
+    D26
+*************************************************************
+
+*************************************************************
+Generating : Top Solder
+      File : PCB.GTS
+
+    Adding Layer      : Top Solder
+
+    Adding Layer      : Board Outline
+
+    Adding Layer      : Top Layer
+
+    Adding Layer      : Multi-Layer
+
+
+Used DCodes :
+    D14
+    D15
+    D16
+    D17
+    D18
+    D19
+    D20
+    D21
+    D22
+    D23
+    D24
+    D25
+    D26
+*************************************************************
+
+*************************************************************
+Generating : Top Overlay
+      File : PCB.GTO
+
+    Adding Layer      : Top Overlay
+
+    Adding Layer      : Board Outline
+
+
+Used DCodes :
+    D10
+    D11
+    D12
+    D13
+    D14
+*************************************************************
+
+*************************************************************
+Generating : Bottom Layer
+      File : PCB.GBL
+
+    Adding Layer      : Bottom Layer
+
+    Adding Layer      : Board Outline
+
+    Adding Layer      : Multi-Layer
+
+
+Used DCodes :
+    D14
+    D23
+    D24
+    D25
+    D27
+    D28
+    D29
+    D30
+    D31
+    D32
+*************************************************************
+
+*************************************************************
+Generating : Top Layer
+      File : PCB.GTL
+
+    Adding Layer      : Top Layer
+
+    Adding Layer      : Board Outline
+
+    Adding Layer      : Multi-Layer
+
+
+Used DCodes :
+    D14
+    D15
+    D16
+    D17
+    D23
+    D24
+    D25
+    D27
+    D28
+    D29
+    D30
+    D31
+    D32
+*************************************************************
+

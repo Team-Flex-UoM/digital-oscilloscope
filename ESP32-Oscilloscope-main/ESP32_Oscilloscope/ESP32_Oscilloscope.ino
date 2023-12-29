@@ -21,8 +21,8 @@
 #define BUFF_SIZE 50000
 #define B_MULT BUFF_SIZE / NUM_SAMPLES
 #define BUTTON_Ok 35
-#define BUTTON_Plus 25
-#define BUTTON_Minus 32
+#define BUTTON_Plus 32
+#define BUTTON_Minus 25
 #define BUTTON_Back 34
 #define BUTTON_SS 12
 
@@ -37,9 +37,11 @@ TaskHandle_t task_adc;
 
 float v_div = 825;
 float s_div = 10;
-float offset = 1.65;
+float offset = 0;
 float toffset = 0;
 float scale = 1.0;
+float mv = -0.53;
+float mvv = -0.795;
 uint8_t current_filter = 1;
 
 // options handler
@@ -112,9 +114,16 @@ void IRAM_ATTR btback()
 void IRAM_ATTR btss()
 {
   if (digitalRead(BUTTON_SS))
+  {
     scale = 10.0;
+    // mv = -0.795;
+  }
   else
+  {
     scale = 1.0;
+    // mv = -0.53;
+    // mvv = -0.795;
+  }
 }
 
 void setup()
